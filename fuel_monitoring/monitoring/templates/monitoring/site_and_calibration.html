@@ -1,0 +1,35 @@
+<!-- monitoring/templates/monitoring/site_and_calibration.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste de sites et des Calibrations</title>
+    {% load static %} <!-- Charger le module static -->
+    <link rel="stylesheet" type="text/css" href="{% static 'monitoring/styles.css' %}"> <!-- Lier le fichier CSS -->
+</head>
+<body>
+    <h1>Liste des sites et des Calibrations</h1>
+
+    <h2>Liste des Sites</h2>
+    <ul>
+        {% for site in sites %}
+            <li>
+                <strong>{{ site.site_name }}</strong> - {{ site.city }} 
+                - Latitude: {{ site.latitude }}, Longitude: {{ site.longitude }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Liste des Calibrations</h2>
+    <ul>
+        {% for calibration in calibrations %}
+            <li>
+                <strong>{{ calibration.fuel_type }}</strong> 
+                - Niveau de Carburant: {{ calibration.fuel_level }} 
+                - Volume: {{ calibration.fuel_volume }} 
+                - Site: {{ calibration.site.site_name }}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
