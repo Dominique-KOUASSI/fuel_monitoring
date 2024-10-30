@@ -5,6 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from monitoring.permissions import IsIotUserAuthenticated
+
 from monitoring.serializers import FuelLevelSerializer
 
 def site_and_calibration_view(request):
@@ -15,6 +17,7 @@ def site_and_calibration_view(request):
 
 
 class FuelLevelView(APIView):
+    permission_classes = [IsIotUserAuthenticated]  # Autorise uniquement les utilisateurs authentifiés
 
     def post(self, request):
         # Instancier le serializer avec les données envoyées dans la requête

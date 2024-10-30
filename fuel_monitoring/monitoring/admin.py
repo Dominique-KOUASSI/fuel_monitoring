@@ -10,7 +10,7 @@ class Site_info_dmin(admin.ModelAdmin):
 
 # Définir l'administration pour le modèle Listing
 class Calibration_info_admin(admin.ModelAdmin):
-    list_display = ('date_created', 'fuel_level', 'fuel_volume')  # Ajouter 'band' pour voir le groupe associé
+    list_display = ('date_created', 'fuel_level', 'fuel_volume', 'site')  # Ajouter 'band' pour voir le groupe associé
 
 # Définir l'administration pour le modèle FuelLevel
 class Fuel_level_admin(admin.ModelAdmin):
