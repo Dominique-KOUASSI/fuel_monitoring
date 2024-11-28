@@ -135,71 +135,7 @@
                             </a>
                         </li>
 
-                        <!-- 
-                        <li class='nav-item'>
-                            <a href='/zha-z2m' class='nav-link align-middle'>
-                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
-                                    class='bi bi-activity' viewBox='0 0 16 16'>
-                                    <use xlink:href="icons.svg#activity" />
-                                </svg>
-                                <span class='ms-1 d-none d-sm-inline'>Z2M and ZHA</span>
-                            </a>
-                        </li>
-                        <li class='nav-item'>
-                            <a href='/html/PAGE_SECURITY.html' class='nav-link align-middle'>
-                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
-                                    class='bi bi-lock' viewBox='0 0 16 16'>
-                                    <use xlink:href="icons.svg#lock" />
-                                </svg>
-                                <span class='ms-1 d-none d-sm-inline'>Security</span>
-                            </a>
-                        </li>
-                        <li class='nav-item'>
-                            <a href='/html/PAGE_MQTT.html' class='nav-link align-middle'>
-                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
-                                    class='bi bi-mqtt' viewBox='0 0 16 16'>
-                                    <use xlink:href="icons.svg#mqtt" />
-                                </svg>
-                                <span class='ms-1 d-none d-sm-inline'>MQTT</span>
-                            </a>
-                        </li>
-                        <li class='nav-item'>
-                            <a href='/html/PAGE_WG.html' class='nav-link align-middle'>
-                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
-                                    class='bi bi-vpn' viewBox='0 0 16 16'>
-                                    <use xlink:href="icons.svg#vpn" />
-                                </svg>
-                                <span class='ms-1 d-none d-sm-inline'>WireGuard</span>
-                            </a>
-                        </li>
-                        <li class='nav-item'>
-                            <a href='/html/PAGE_SYSTOOLS.html' class='nav-link align-middle'>
-                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
-                                    class='bi bi-cpu' viewBox='0 0 16 16'>
-                                    <use xlink:href="icons.svg#cpu" />
-                                </svg>
-                                <span class='ms-1 d-none d-sm-inline'>System and Tools</span>
-                            </a>
-                        </li>
-                        <li class='nav-item'>
-                            <a href='/html/PAGE_ABOUT.html' class='nav-link align-middle'>
-                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
-                                    class='bi bi-info-square' viewBox='0 0 16 16'>
-                                    <use xlink:href="icons.svg#info-square" />
-                                </svg>
-                                <span class='ms-1 d-none d-sm-inline'>About</span>
-                            </a>
-                        </li>
-                        <li class='nav-item logoutLink visually-hidden'>
-                            <a href='/html/PAGE_LOGOUT.html' class='nav-link align-middle d-none d-sm-inline'>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
-                                    class="bi bi-door-open" viewBox="0 0 16 16">
-                                    <use xlink:href="icons.svg#door-open" />
-                                </svg>
-                                <span class='ms-1'>Logout</span>
-                            </a>
-                        </li>
-                        -->
+ 
                     </ul>
                     <hr>
 
@@ -208,13 +144,6 @@
             <div class='col py-3'>
                 <h2 data-replace="pageName" class="mb-3" id="pagenamePC"></h2>
 
-                <!-- 
-                <div id="pageContent" class="container">
-
-                    <canvas id="myChart" width="400" height="200"></canvas>
-
-                </div>
-                -->
 
                 <div id="pageContent" class="container py-4">
 
@@ -224,6 +153,7 @@
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="site_name" class="form-label">Site</label>
+
                             <select name="site_name" id="site_name" class="form-control" required>
                                 {% for site in sites %}
                                     <!-- option value="{{ site.site_name }}">{{ site.site_name }}</option -->
@@ -232,6 +162,7 @@
                                     </option>
                                 {% endfor %}
                             </select>
+
                         </div>
                         <div class="mb-3">
                             <label for="start_date" class="form-label">Date de début</label>
@@ -244,23 +175,6 @@
                         <button type="submit" class="btn btn-primary w-100">Valider</button>
                     </form>
 
-
-                    <!-- Résultats 
-                    {% if fuel_levels %}
-                    <div class="mt-5">
-                        <h2 class="text-success text-center mb-4">
-                            Niveaux de carburant pour {{ site_name }} entre {{ start_date }} et {{ end_date }}
-                        </h2>
-                        <canvas id="fuelLevelChart" class="fuelLevelChart"></canvas>
-                    </div>
-                    {% else %}
-                    <div class="alert alert-warning mt-5" role="alert">
-                        Aucune donnée disponible pour ce site et cette période.
-                    </div>
-                    {% endif %}
-                    
-                
--->
                 
                 {% if fuel_levels %}
                 <div class="mt-5">

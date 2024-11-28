@@ -1,19 +1,33 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.auth.models import User  # Importer le modèle User de Django
 
 # Create your models here.
-class Site_info(models.Model):
 
+#class Site_info(models.Model):
+
+#    date_created = models.DateTimeField(auto_now_add=True)
+#    site_name = models.CharField(max_length=255)
+#    #site_name = models.CharField(max_length=100, unique=True)  # Ajoutez unique=True ici
+#    site_name = models.CharField(max_length=100, primary_key=True)
+#    city = models.CharField(max_length=255)
+#    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+#    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+
+#    def __str__(self):
+#        return self.site_name
+
+class Site_info(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
-    site_name = models.CharField(max_length=255)
-    #site_name = models.CharField(max_length=100, unique=True)  # Ajoutez unique=True ici
     site_name = models.CharField(max_length=100, primary_key=True)
     city = models.CharField(max_length=255)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=2)
 
     def __str__(self):
-        return self.site_name
+        return f"{self.site_name} ({self.user.username})"
+
     
 class Calibration_info(models.Model):
 

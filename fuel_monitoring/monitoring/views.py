@@ -33,7 +33,7 @@ class FuelLevelView(APIView):
     
 
 @login_required
-def fuel_level_trends(request):
+def fuel_level_trends_bakup(request):
     sites = Site_info.objects.all()  # La liste des sites disponibles
     selected_site = None  # Site sélectionné
     fuel_levels = []  # Par défaut, aucune donnée
@@ -60,6 +60,40 @@ def fuel_level_trends(request):
         'sites': sites,
         'fuel_levels': fuel_levels,
         'selected_site': selected_site,  # Passer le site sélectionné
+        'start_date': request.POST.get('start_date', ''),
+        'end_date': request.POST.get('end_date', ''),
+    })
+
+
+
+@login_required  # Assure que seuls les utilisateurs connectés accèdent à cette vue
+def fuel_level_trends(request):
+    user = request.user  # Utilisateur connecté
+    sites = Site_info.objects.filter(user=user)  # Filtrer les sites liés à l'utilisateur
+    selected_site = None
+    fuel_levels = []
+
+    if request.method == 'POST':
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+        selected_site = request.POST.get('site_name')  # Récupérer le site sélectionné
+
+        if start_date and end_date and selected_site:
+            # Convertir les dates au format timezone-aware
+            start_date_dt = timezone.make_aware(timezone.datetime.fromisoformat(start_date))
+            end_date_dt = timezone.make_aware(timezone.datetime.fromisoformat(end_date))
+
+            # Filtrer les niveaux de carburant pour le site sélectionné et la plage de dates
+            fuel_levels = FuelLevel.objects.filter(
+                site__site_name=selected_site,
+                site__user=user,  # Assurez-vous que le site appartient à l'utilisateur connecté
+                timestamp__range=(start_date_dt, end_date_dt)
+            ).order_by('timestamp')
+
+    return render(request, 'monitoring/fuel_level_trends.html', {
+        'sites': sites,
+        'fuel_levels': fuel_levels,
+        'selected_site': selected_site,
         'start_date': request.POST.get('start_date', ''),
         'end_date': request.POST.get('end_date', ''),
     })
