@@ -1,0 +1,340 @@
+<!-- templates/fuel_level_trends.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- {% load static %}  Charger le module static -->
+
+    <!-- link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <title>Évolution du niveau de carburant</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'monitoring/styles.css' %}"> <!-- Lier le fichier CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'monitoring/required.css' %}"> <!-- Lier le fichier CSS -->
+    <link rel="stylesheet" type="text/css" href="{% static 'monitoring/bootstrap.min.css' %}"> <!-- Lier le fichier CSS -->
+
+    <script type='text/javascript' src="{% static 'monitoring/js/bootstrap.min.js' %}"></script>
+    <script type='text/javascript' src="{% static 'monitoring/js/jquery-min.js' %}"></script>
+    <script type='text/javascript' src="{% static 'monitoring/js/masonry.js' %}"></script>
+    <script type='text/javascript' src="{% static 'monitoring/js/functions.js' %}"></script>
+
+    <style>
+        .fuelLevelChart {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+
+</head>
+
+<body>
+
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div class="toast fade toast_show hide" data-bs-autohide="false" role="alert">
+            <div class="toast-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                    class="bi bi-info-circle" viewBox="0 0 16 16" reserveAspectRatio="xMidYMid slice" focusable="false"
+                    role="img">
+                    <use xlink:href="icons.svg#info-circle" />
+                </svg>
+                <strong class="mr-auto" style="padding-left: 10px;" id="toastHeaderText">Tip</strong>
+            </div>
+            <div class="toast-body">
+                <div id="toastBody"></div>
+                <div class="mt-2 pt-2 border-top" id="toastButtons">
+                    <button type="button" class="btn btn-outline-primary" data-bs-dismiss="toast"
+                        onclick="localStorage.setItem('refresh_tip_got', 1)">Got it!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="100"
+        aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Modal title</h5>
+                    <button type="button" class="btn-close visually-hidden modal-btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+
+                </div>
+                <div class="modal-footer" id="modalButtons">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar shadow sticky-top bg-light" style="display: none;">
+        <div class="container">
+            <div class="navbar-brand">
+                <span class="navbar-toggler-icon"
+                    onclick="$('#sidenav').addClass('sidenav-active'); sidenavAutoclose();"></span>
+            </div>
+            <h2 data-replace="pageName" class="position-absolute top-50 start-50 translate-middle"></h2>
+            <a href='/html/PAGE_LOGOUT.html' class='btn logoutLink nav-link visually-hidden'>
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                    class="bi bi-door-open" viewBox="0 0 16 16">
+                    <use xlink:href="icons.svg#door-open" />
+                </svg>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+    <div class='container-fluid'>
+        <div class='row flex-nowrap'>
+            <div id="sidenav" class='col-auto nav-container px-0 col-md-3 col-xl-2 bg-dark-grey nav-shadow'>
+                <div class='d-flex flex-column align-items-center align-items-sm-start pt-2 text-white min-vh-100'>
+                    <div class='logo-wrapper'>
+                        <a>
+                        <img src="{% static 'monitoring/images/carburant.png' %}" class="d-inline-block align-text-middle" style="width: 25px"> 
+                        <!-- img src="{% static 'monitoring/images/logo.png' %}" alt="Exemple d'image" -->
+                        <!-- img src="{% static 'monitoring/images/logo.png' %}" class="d-inline-block align-text-middle" -->
+                        <span class='fs-5 d-none d-sm-inline'>FUEL Monitoring</span>
+                        </a>
+                    </div>
+                    <ul class='nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start'
+                        id='menu'>
+                        <li class='nav-item'>
+                            <a href='/' class='nav-link align-middle' onclick=''>
+                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
+                                    class='bi bi-house' viewBox='0 0 16 16'>
+                                    <use xlink:href="icons.svg#house" />
+                                </svg>
+                                <span class='ms-1 d-none d-sm-inline'>Status</span>
+                            </a>
+                        </li>
+                        <li class='nav-item'>
+                            <a href='/html/PAGE_GENERAL.html' class='nav-link align-middle'>
+                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
+                                    class='bi bi-hdd-stack' viewBox='0 0 16 16'>
+                                    <use xlink:href="icons.svg#hdd-stack" />
+                                </svg>
+                                <span class='ms-1 d-none d-sm-inline'>General</span>
+                            </a>
+                        </li>
+                        <li class='nav-item'>
+                            <a href='/html/PAGE_ETHERNET.html' class='nav-link align-middle'>
+                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
+                                    class='bi bi-ethernet' viewBox='0 0 16 16'>
+                                    <use xlink:href="icons.svg#ethernet" />
+                                </svg>
+                                <span class='ms-1 d-none d-sm-inline'>Ethernet</span>
+                            </a>
+                        </li>
+                        <li class='nav-item'>
+                            <a href='/html/PAGE_WIFI.html' class='nav-link align-middle'>
+                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
+                                    class='bi bi-wifi' viewBox='0 0 16 16'>
+                                    <use xlink:href="icons.svg#wifi" />
+                                </svg>
+                                <span class='ms-1 d-none d-sm-inline'>WiFi</span>
+                            </a>
+                        </li>
+
+                        <!-- 
+                        <li class='nav-item'>
+                            <a href='/zha-z2m' class='nav-link align-middle'>
+                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
+                                    class='bi bi-activity' viewBox='0 0 16 16'>
+                                    <use xlink:href="icons.svg#activity" />
+                                </svg>
+                                <span class='ms-1 d-none d-sm-inline'>Z2M and ZHA</span>
+                            </a>
+                        </li>
+                        <li class='nav-item'>
+                            <a href='/html/PAGE_SECURITY.html' class='nav-link align-middle'>
+                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
+                                    class='bi bi-lock' viewBox='0 0 16 16'>
+                                    <use xlink:href="icons.svg#lock" />
+                                </svg>
+                                <span class='ms-1 d-none d-sm-inline'>Security</span>
+                            </a>
+                        </li>
+                        <li class='nav-item'>
+                            <a href='/html/PAGE_MQTT.html' class='nav-link align-middle'>
+                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
+                                    class='bi bi-mqtt' viewBox='0 0 16 16'>
+                                    <use xlink:href="icons.svg#mqtt" />
+                                </svg>
+                                <span class='ms-1 d-none d-sm-inline'>MQTT</span>
+                            </a>
+                        </li>
+                        <li class='nav-item'>
+                            <a href='/html/PAGE_WG.html' class='nav-link align-middle'>
+                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
+                                    class='bi bi-vpn' viewBox='0 0 16 16'>
+                                    <use xlink:href="icons.svg#vpn" />
+                                </svg>
+                                <span class='ms-1 d-none d-sm-inline'>WireGuard</span>
+                            </a>
+                        </li>
+                        <li class='nav-item'>
+                            <a href='/html/PAGE_SYSTOOLS.html' class='nav-link align-middle'>
+                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
+                                    class='bi bi-cpu' viewBox='0 0 16 16'>
+                                    <use xlink:href="icons.svg#cpu" />
+                                </svg>
+                                <span class='ms-1 d-none d-sm-inline'>System and Tools</span>
+                            </a>
+                        </li>
+                        <li class='nav-item'>
+                            <a href='/html/PAGE_ABOUT.html' class='nav-link align-middle'>
+                                <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
+                                    class='bi bi-info-square' viewBox='0 0 16 16'>
+                                    <use xlink:href="icons.svg#info-square" />
+                                </svg>
+                                <span class='ms-1 d-none d-sm-inline'>About</span>
+                            </a>
+                        </li>
+                        <li class='nav-item logoutLink visually-hidden'>
+                            <a href='/html/PAGE_LOGOUT.html' class='nav-link align-middle d-none d-sm-inline'>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor"
+                                    class="bi bi-door-open" viewBox="0 0 16 16">
+                                    <use xlink:href="icons.svg#door-open" />
+                                </svg>
+                                <span class='ms-1'>Logout</span>
+                            </a>
+                        </li>
+                        -->
+                    </ul>
+                    <hr>
+
+                </div>
+            </div>
+            <div class='col py-3'>
+                <h2 data-replace="pageName" class="mb-3" id="pagenamePC"></h2>
+
+                <!-- 
+                <div id="pageContent" class="container">
+
+                    <canvas id="myChart" width="400" height="200"></canvas>
+
+                </div>
+                -->
+
+                <div id="pageContent" class="container py-4">
+
+                    <h1 class="text-center text-primary mb-4">Évolution du niveau de carburant</h1>
+                    <!-- Formulaire -->
+                    <form method="POST" class="card p-4 shadow-sm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="site_name" class="form-label">Site</label>
+                            <select name="site_name" id="site_name" class="form-control" required>
+                                {% for site in sites %}
+                                    <!-- option value="{{ site.site_name }}">{{ site.site_name }}</option -->
+                                    <option value="{{ site.site_name }}" {% if site.site_name == selected_site %}selected{% endif %}>
+                                        {{ site.site_name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="start_date" class="form-label">Date de début</label>
+                            <input type="datetime-local" name="start_date" id="start_date" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="end_date" class="form-label">Date de fin</label>
+                            <input type="datetime-local" name="end_date" id="end_date" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Valider</button>
+                    </form>
+
+
+                    <!-- Résultats 
+                    {% if fuel_levels %}
+                    <div class="mt-5">
+                        <h2 class="text-success text-center mb-4">
+                            Niveaux de carburant pour {{ site_name }} entre {{ start_date }} et {{ end_date }}
+                        </h2>
+                        <canvas id="fuelLevelChart" class="fuelLevelChart"></canvas>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning mt-5" role="alert">
+                        Aucune donnée disponible pour ce site et cette période.
+                    </div>
+                    {% endif %}
+                    
+                
+-->
+                
+                {% if fuel_levels %}
+                <div class="mt-5">
+                    <h2 class="text-success text-center mb-4">
+                        Niveaux de carburant pour {{ site_name }} entre {{ start_date }} et {{ end_date }}
+                    </h2>
+                    <canvas id="fuelLevelChart" class="fuelLevelChart"></canvas>
+                </div>
+                
+                <script>
+                    const ctx = document.getElementById('fuelLevelChart').getContext('2d');
+                    const labels = [{% for level in fuel_levels %}'{{ level.timestamp|date:"Y-m-d H:i:s" }}'{% if not forloop.last %}, {% endif %}{% endfor %}];
+                    const data = [{% for level in fuel_levels %}{{ level.level }}{% if not forloop.last %}, {% endif %}{% endfor %}];
+            
+                    const fuelLevelChart = new Chart(ctx, {
+                        type: 'line', // Type de graphique
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Niveau de Carburant (%)',
+                                data: data,
+                                fill: false,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                tension: 0.1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Date et Heure'
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Niveau de Carburant (%)'
+                                    },
+                                    min: 0,
+                                    max: 200
+                                }
+                            }
+                        }
+                    });
+                </script>
+                {% else %}
+
+                <div class="alert alert-warning mt-5" role="alert">
+                    Aucune donnée disponible pour ce site et cette période.
+                </div>
+
+                {% endif %}
+                        
+            </div>
+
+                <h6 class="fixed-bottom"
+                    style="text-align: right;color: #0000007a;margin-bottom: 0;font-weight: 100;font-size: 60%;">© 2024
+                    Fuel monitoring</h6>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
