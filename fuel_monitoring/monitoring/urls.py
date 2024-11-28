@@ -1,3 +1,6 @@
+from django.contrib.auth.views import LoginView, LogoutView
+from django.urls import path
+
 from django.urls import path, include
 from monitoring.views import site_and_calibration_view, FuelLevelView, fuel_level_trends
 
@@ -10,4 +13,11 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='obtain_tokens'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='refresh_token'),
     path('api/fuel-level/', FuelLevelView.as_view(), name='fuel-level'),
+
+
+    # Page de connexion
+    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
+    
+    # Page de déconnexion
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]

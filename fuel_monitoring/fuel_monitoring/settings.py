@@ -146,3 +146,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
+
+
+LOGIN_REDIRECT_URL = '/fuel-levels/'  # Page vers laquelle rediriger après la connexion
+LOGOUT_REDIRECT_URL = '/login/'  # Page vers laquelle rediriger après la déconnexion

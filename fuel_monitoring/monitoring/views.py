@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 from django.shortcuts import render
 from monitoring.models import Site_info, Calibration_info, FuelLevel
 
@@ -30,7 +32,7 @@ class FuelLevelView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-
+@login_required
 def fuel_level_trends(request):
     sites = Site_info.objects.all()  # La liste des sites disponibles
     selected_site = None  # Site sélectionné

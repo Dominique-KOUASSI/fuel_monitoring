@@ -93,8 +93,6 @@
                     <div class='logo-wrapper'>
                         <a>
                         <img src="{% static 'monitoring/images/carburant.png' %}" class="d-inline-block align-text-middle" style="width: 25px"> 
-                        <!-- img src="{% static 'monitoring/images/logo.png' %}" alt="Exemple d'image" -->
-                        <!-- img src="{% static 'monitoring/images/logo.png' %}" class="d-inline-block align-text-middle" -->
                         <span class='fs-5 d-none d-sm-inline'>FUEL Monitoring</span>
                         </a>
                     </div>
@@ -106,7 +104,7 @@
                                     class='bi bi-house' viewBox='0 0 16 16'>
                                     <use xlink:href="icons.svg#house" />
                                 </svg>
-                                <span class='ms-1 d-none d-sm-inline'>Status</span>
+                                <span class='ms-1 d-none d-sm-inline'>Utilisateur</span>
                             </a>
                         </li>
                         <li class='nav-item'>
@@ -115,7 +113,7 @@
                                     class='bi bi-hdd-stack' viewBox='0 0 16 16'>
                                     <use xlink:href="icons.svg#hdd-stack" />
                                 </svg>
-                                <span class='ms-1 d-none d-sm-inline'>General</span>
+                                <span class='ms-1 d-none d-sm-inline'>Tableau</span>
                             </a>
                         </li>
                         <li class='nav-item'>
@@ -124,16 +122,16 @@
                                     class='bi bi-ethernet' viewBox='0 0 16 16'>
                                     <use xlink:href="icons.svg#ethernet" />
                                 </svg>
-                                <span class='ms-1 d-none d-sm-inline'>Ethernet</span>
+                                <span class='ms-1 d-none d-sm-inline'>Graphique</span>
                             </a>
                         </li>
                         <li class='nav-item'>
-                            <a href='/html/PAGE_WIFI.html' class='nav-link align-middle'>
+                            <a href="{% url 'login' %}" class='nav-link align-middle'>
                                 <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' fill='currentColor'
                                     class='bi bi-wifi' viewBox='0 0 16 16'>
                                     <use xlink:href="icons.svg#wifi" />
                                 </svg>
-                                <span class='ms-1 d-none d-sm-inline'>WiFi</span>
+                                <span class='ms-1 d-none d-sm-inline'>Déconnexion</span>
                             </a>
                         </li>
 
@@ -303,8 +301,8 @@
                                         display: true,
                                         text: 'Niveau de Carburant (%)'
                                     },
-                                    min: 0,
-                                    max: 200
+                                   // min: 0,
+                                   // max: 200
                                 }
                             }
                         }
