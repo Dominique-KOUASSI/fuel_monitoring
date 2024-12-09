@@ -7,11 +7,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from monitoring.permissions import IsIotUserAuthenticated
+from monitoring.permissions import IsIotUserAuthenticated, HasViewRestrictedDataPermission
 
 from monitoring.serializers import FuelLevelSerializer
 
 from django.utils import timezone
+
+from django.http import JsonResponse
 
 def site_and_calibration_view(request):
     sites = Site_info.objects.all()  # Récupère tous les sites
@@ -69,7 +71,13 @@ def fuel_level_trends_bakup(request):
 @login_required  # Assure que seuls les utilisateurs connectés accèdent à cette vue
 def fuel_level_trends(request):
     user = request.user  # Utilisateur connecté
-    sites = Site_info.objects.filter(user=user)  # Filtrer les sites liés à l'utilisateur
+
+    # Vérifier si l'utilisateur a la permission view_restricted_data pour afficher les donnees
+    if not HasViewRestrictedDataPermission().has_permission(request, None):
+        return JsonResponse({'error': "Vous n'avez pas la permission d'accéder aux données restreintes."}, status=403)
+
+    #sites = Site_info.objects.filter(user=user)  # Filtrer les sites liés à l'utilisateur
+    sites = Site_info.objects.using('restricted').filter(user=user)  # Filtrer les sites liés à l'utilisateur
     selected_site = None
     fuel_levels = []
 
@@ -84,7 +92,8 @@ def fuel_level_trends(request):
             end_date_dt = timezone.make_aware(timezone.datetime.fromisoformat(end_date))
 
             # Filtrer les niveaux de carburant pour le site sélectionné et la plage de dates
-            fuel_levels = FuelLevel.objects.filter(
+            #fuel_levels = FuelLevel.objects.filter(
+            fuel_levels = FuelLevel.objects.using('restricted').filter(
                 site__site_name=selected_site,
                 site__user=user,  # Assurez-vous que le site appartient à l'utilisateur connecté
                 timestamp__range=(start_date_dt, end_date_dt)

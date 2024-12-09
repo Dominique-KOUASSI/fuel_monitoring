@@ -60,7 +60,10 @@ class FuelLevel(models.Model):
     #site = models.ForeignKey(Site_info, to_field='site_name', null=True, on_delete=models.CASCADE)  # clé étrangère vers Site_info
     #site = models.ForeignKey(Site_info, to_field='site_name', on_delete=models.CASCADE, default='AC795_IRATEKE')   # clé étrangère vers Site_info
     #site = models.ForeignKey(Site_info, on_delete=models.CASCADE)
-
+    class Meta:
+        permissions = [
+            ("view_restricted_data", "Can view restricted data")
+        ]
     def __str__(self):
         return f"Fuel level: {self.level}, Site: {self.site}"
 

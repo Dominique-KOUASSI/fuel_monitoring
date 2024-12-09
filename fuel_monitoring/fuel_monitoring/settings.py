@@ -91,7 +91,16 @@ DATABASES = {
              'PASSWORD': '12345',
              'HOST': 'localhost',
              'PORT': '5432',
-    }
+    },
+
+    'restricted': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'fuel_monitoring',
+            'USER': 'restricted_user',
+            'PASSWORD': 'restricted_user',
+            'HOST': 'localhost',
+            'PORT': '5432',
+    },
 }
 
 
@@ -119,11 +128,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+#TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = False
+#USE_TZ = False
+USE_TZ = True
+TIME_ZONE = 'America/Moncton'  # Remplacez par le fuseau horaire approprié
 
 
 # Static files (CSS, JavaScript, Images)

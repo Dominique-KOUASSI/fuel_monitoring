@@ -9,6 +9,14 @@ class IsAdminAuthenticated(BasePermission):
 
 # Creation d'une permission pour les microcontroleurs
 class IsIotUserAuthenticated(BasePermission):
- 
+
     def has_permission(self, request, view):
         return bool(request.user and request.user.is_authenticated)
+    
+# Permission pour accéder aux données restreintes
+# Cette permission permet a l'utilisateur d'acceder aux donnees pour les afficher
+class HasViewRestrictedDataPermission(BasePermission):
+
+    def has_permission(self, request, view):
+        # Vérifier si l'utilisateur a la permission 'view_restricted_data'
+        return request.user.has_perm('monitoring.view_restricted_data')
